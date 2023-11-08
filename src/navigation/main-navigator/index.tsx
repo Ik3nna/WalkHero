@@ -5,6 +5,7 @@ import Loading from '../../screens/loading';
 import Login from '../../screens/login';
 import Feed from '../../screens/feed';
 import LeaderBoard from '../../screens/leaderboard';
+import colors from '../../assets/themes/colors';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,9 +22,16 @@ function BottomTabs () {
 export const MainNavigator = ()=> {
     return(
         <Stack.Navigator>
-            <Stack.Screen name={LOADING} component={Loading} />
-            <Stack.Screen name={LOGIN} component={Login} />
-            <Stack.Screen name={HOME} component={BottomTabs} />
+            <Stack.Screen name={LOADING} component={Loading} options={{ headerShown: false}} />
+            <Stack.Screen name={LOGIN} component={Login} options={{ headerShown: false}} />
+            <Stack.Screen 
+                name={HOME} 
+                component={BottomTabs} 
+                options={{ 
+                    headerStyle: { backgroundColor: colors.purple },
+                    headerBackVisible: false
+                }} 
+            />
         </Stack.Navigator>
     )
 }

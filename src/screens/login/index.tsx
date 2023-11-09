@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -8,7 +8,10 @@ import colors from '../../assets/themes/colors'
 import { useForm, Controller } from "react-hook-form";
 import { FormDataProps, NavigationProps } from '../../types'
 import Button from '../../components/button'
-import { SIGNUP } from '../../constants/routeName'
+import { HOME, SIGNUP } from '../../constants/routeName'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../config/firebaseConfig'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { width, height } = Dimensions.get("window");
 
@@ -26,8 +29,18 @@ const Login = ({ navigation }: NavigationProps) => {
   })
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = (data: FormDataProps)=> {
-    console.log(data)
+  const onSubmit = async (data: FormDataProps)=> {
+    setIsLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userToken = await userCredential.user.getIdToken();
+      AsyncStorage.setItem("userToken", userToken);
+      navigation.navigate(HOME);
+    } catch (error: any) {
+      Alert.alert("Error", "Invalid Login Credentials. Try again")
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -63,7 +76,7 @@ const Login = ({ navigation }: NavigationProps) => {
             required: "This field is required",
             pattern: {
               value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*([a-zA-Z\d])\1{2}).{8,}$/,
-              message: "Password must be at least 8 characters and include an uppercase, lowercase, and a number"
+              message: "Password must contain at least one lowercase letter, one uppercase letter, one digit, and be at least 8 characters long."
             }
           }}
           render={({ field: { onChange, onBlur, value } }) => (

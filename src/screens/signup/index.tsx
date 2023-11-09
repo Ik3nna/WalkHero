@@ -38,7 +38,7 @@ const Login = ({ navigation }: NavigationProps) => {
       AsyncStorage.setItem("userToken", userToken);
       navigation.navigate(HOME);
     } catch (error: any) {
-      Alert.alert("oops", error.message)
+      Alert.alert("Error", "Please try again")
     } finally {
       setIsLoading(false);
     }

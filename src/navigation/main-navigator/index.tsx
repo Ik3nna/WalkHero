@@ -7,14 +7,44 @@ import Feed from '../../screens/feed';
 import LeaderBoard from '../../screens/leaderboard';
 import colors from '../../assets/themes/colors';
 import Signup from '../../screens/signup';
+import { getFontSize } from '../../utils/getFontSize';
+import { StyleSheet, View } from 'react-native';
+import Icon from '../../components/icons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function BottomTabs () {
     return(
-        <Tab.Navigator>
-            <Tab.Screen name={FEED} component={Feed} />
+        <Tab.Navigator
+            screenOptions={
+                ({ route }) => ({
+                tabBarIcon: ({ focused, size, color }) => {
+                    let iconName;
+                    let type;
+                    if (route.name === FEED) {
+                        iconName = "analytics-outline";
+                        type = "ionicons";
+                        size = focused ? 30 : 25;
+                    } else  {
+                        iconName = "newspaper-outline";
+                        type = "ionicons";
+                        size = focused ? 30 : 25;
+                    } 
+                    return(
+                        <View>
+                            <Icon type={type} name={iconName} size={size} color={color} />
+                        </View>
+                    )
+                },
+                tabBarLabelStyle: style.tabBarLabelStyle,
+                tabBarActiveTintColor: colors.purple,
+                tabBarInactiveTintColor: colors.grey,
+                headerShown: false
+                })
+            }
+        >
+            <Tab.Screen name={FEED} component={Feed} options={{ headerShown: false }} />
             <Tab.Screen name={LEADERBOARD} component={LeaderBoard} />
         </Tab.Navigator>
     )
@@ -30,10 +60,27 @@ export const MainNavigator = ()=> {
                 name={HOME} 
                 component={BottomTabs} 
                 options={{ 
-                    headerStyle: { backgroundColor: colors.purple },
-                    headerBackVisible: false
+                    headerStyle: style.headerStyle,
+                    headerBackVisible: false,
+                    headerTitle: "Feed",
+                    headerTitleStyle: style.headerTitleStyle
                 }} 
             />
         </Stack.Navigator>
     )
 }
+
+const style = StyleSheet.create({
+    tabBarLabelStyle: {
+        fontSize: getFontSize(0.02), 
+        fontFamily: "normal" 
+    },
+    headerStyle: {
+        backgroundColor: colors.purple
+    },
+    headerTitleStyle: {
+        color: colors.white, 
+        fontFamily: "normal", 
+        fontSize: getFontSize(0.025)
+    }
+})

@@ -6,7 +6,6 @@ import { getFontSize } from '../../utils/getFontSize'
 import { NavigationProps } from '../../types'
 import { HOME, LOGIN } from '../../constants/routeName'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import * as ExpoJwt from "expo-jwt";
 
 const Loading = ({ navigation }: NavigationProps) => {
   const checkAuthenticationStatus = async ()=> {

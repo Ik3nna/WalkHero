@@ -34,3 +34,8 @@ export type ButtonProps = {
     width: number,
     onPress?: ()=> void
 }
+
+// Icon type
+export type IconProps = {
+    [props: string]: any
+}

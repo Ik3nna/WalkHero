@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getFontSize } from '../../utils/getFontSize'
 import Input from '../../components/input'
 import colors from '../../assets/themes/colors'
 import { useForm, Controller } from "react-hook-form";
-import { FormDataProps } from '../../types'
+import { FormDataProps, NavigationProps } from '../../types'
+import Button from '../../components/button'
+import { SIGNUP } from '../../constants/routeName'
 
-const Login = () => {
+const { width, height } = Dimensions.get("window");
+
+const Login = ({ navigation }: NavigationProps) => {
   const {
     control,
     handleSubmit,
@@ -20,6 +24,11 @@ const Login = () => {
       password: ""
     },
   })
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = (data: FormDataProps)=> {
+    console.log(data)
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,7 +63,7 @@ const Login = () => {
             required: "This field is required",
             pattern: {
               value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*([a-zA-Z\d])\1{2}).{8,}$/,
-              message: "Password must be at least 8 characters and include uppercase, lowercase, and a number"
+              message: "Password must be at least 8 characters and include an uppercase, lowercase, and a number"
             }
           }}
           render={({ field: { onChange, onBlur, value } }) => (
@@ -65,14 +74,30 @@ const Login = () => {
               onBlur={onBlur}
               secureTextEntry
               error={errors.password?.message}
+              errorWidth={width - (0.2 * width)}
             />
           )}
           name="password"
         />
       </View>
 
-      <View>
+      <View style={styles.btn_container}>
+        <Button 
+          title='Login'
+          bgColor={colors.purple}
+          color={colors.white}
+          loading={isLoading}
+          width={width - (width * 0.2)}
+          onPress={handleSubmit(onSubmit)}
+        />
 
+        <Button 
+          title='Sign Up'
+          bgColor="transparent"
+          color={colors.black}
+          width={width - (width * 0.2)}
+          onPress={()=>navigation.navigate(SIGNUP)}
+        />
       </View>
     </SafeAreaView>
   )
@@ -86,7 +111,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: "10%",
-    position: "relative"
+    position: "relative",
+    height: height
   },
   title: {
     fontFamily: "curlyBold",
@@ -96,6 +122,11 @@ const styles = StyleSheet.create({
   form_container: {
     paddingVertical: "5%",
     flexDirection: "column",
-    rowGap: 20
+    rowGap: 20,
+    flex: 1,
+  },
+  btn_container: {
+    position: "absolute",
+    bottom: "10%"
   }
 })

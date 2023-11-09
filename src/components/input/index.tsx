@@ -6,7 +6,7 @@ import { getFontSize } from '../../utils/getFontSize';
 
 const { width } = Dimensions.get("window");
 
-const Input = ({ placeholder, value, onChange, onBlur, error, ...props }: InputProps) => {
+const Input = ({ placeholder, value, onChange, onBlur, error, errorWidth, ...props }: InputProps) => {
   return (
     <View>
       <TextInput 
@@ -18,27 +18,27 @@ const Input = ({ placeholder, value, onChange, onBlur, error, ...props }: InputP
         onBlur={onBlur}
         {...props}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={[styles.error, { width: errorWidth ? errorWidth : null }]}>{error}</Text>}
     </View>
   )
 }
 
-export default Input
+export default Input;
 
 const styles = StyleSheet.create({
-    input: {
-        borderBottomColor: colors.black,
-        width: width - (width * 0.2),
-        borderBottomWidth: 2,
-        paddingVertical: "3%", 
-        fontFamily: "normal",
-        fontSize: getFontSize(0.03),
-        color: colors.grey
-    },
-    error: {
-        fontFamily: "normal",
-        color: colors.danger,
-        paddingBottom: 2,
-        fontSize: getFontSize(0.015)
-    }
+  input: {
+    borderBottomColor: colors.black,
+    width: width - (width * 0.2),
+    borderBottomWidth: 2,
+    paddingVertical: "3%", 
+    fontFamily: "normal",
+    fontSize: getFontSize(0.03),
+    color: colors.grey
+  },
+  error: {
+    fontFamily: "normal",
+    color: colors.danger,
+    paddingVertical: "1%",
+    fontSize: getFontSize(0.015)
+  }
 })

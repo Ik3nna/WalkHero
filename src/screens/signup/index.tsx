@@ -8,7 +8,7 @@ import colors from '../../assets/themes/colors'
 import { useForm, Controller } from "react-hook-form";
 import { FormDataProps, NavigationProps } from '../../types'
 import Button from '../../components/button'
-import { LOGIN, SIGNUP } from '../../constants/routeName'
+import { LOGIN } from '../../constants/routeName'
 
 const { width, height } = Dimensions.get("window");
 

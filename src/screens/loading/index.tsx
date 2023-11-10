@@ -5,29 +5,18 @@ import { StatusBar } from 'expo-status-bar'
 import { getFontSize } from '../../utils/getFontSize'
 import { NavigationProps } from '../../types'
 import { HOME, LOGIN } from '../../constants/routeName'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { decode as base64Decode } from 'base-64'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from '../../config/firebaseConfig'
 
 const Loading = ({ navigation }: NavigationProps) => {
   const checkAuthenticationStatus = async ()=> {
-    try {
-      const userToken = await AsyncStorage.getItem("userToken");
-    
-      if (userToken) {
-        const decodedToken = JSON.parse(base64Decode(userToken.split('.')[1]));
-        const currentTime = Date.now() / 1000;
-
-        if (currentTime < decodedToken.exp) {
-          navigation.navigate(HOME);
-        } else {
-          navigation.navigate(LOGIN);
-        } 
+    onAuthStateChanged(auth, async (user)=> {
+      if (user) {
+        navigation.navigate(HOME);
       } else {
         navigation.navigate(LOGIN);
       }
-    } catch (error) {
-      console.log("err", error);
-    }
+    })
   }
 
   useEffect(()=>{

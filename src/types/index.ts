@@ -31,11 +31,19 @@ export type ButtonProps = {
     color: string,
     loading?: boolean,
     style?: any,
-    width: number,
-    onPress?: ()=> void
+    width?: number,
+    onPress?: ()=> void,
+    [props: string]: any
 }
 
 // Icon type
 export type IconProps = {
     [props: string]: any
+}
+
+// Feed type 
+export type FeedProps = {
+    date: number,
+    steps: number,
+    timeTaken: string
 }

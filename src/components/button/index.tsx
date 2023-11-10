@@ -4,7 +4,7 @@ import { ButtonProps } from '../../types'
 import { getFontSize } from '../../utils/getFontSize';
 import colors from '../../assets/themes/colors';
 
-const Button = ({ title, bgColor, color, loading, width, style, onPress }: ButtonProps) => {
+const Button = ({ title, bgColor, color, loading, width, style, onPress, ...props }: ButtonProps) => {
   const getBorderColor = () => {
     if (loading) {
       return colors.grey
@@ -14,7 +14,7 @@ const Button = ({ title, bgColor, color, loading, width, style, onPress }: Butto
   }
 
   return (
-    <TouchableOpacity onPress={onPress} disabled={loading} style={[styles.container, style, { backgroundColor: getBorderColor(), width: width }]}>
+    <TouchableOpacity onPress={onPress} {...props} disabled={loading || props.disabled} style={[styles.container, style, { backgroundColor: getBorderColor(), width: width }]}>
       {loading && <ActivityIndicator style={styles.loading} />}
       <Text style={[styles.text, { color: color }]}>{title}</Text>
     </TouchableOpacity>

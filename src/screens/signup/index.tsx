@@ -45,7 +45,7 @@ const Login = ({ navigation }: NavigationProps) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const userToken = await userCredential.user.getIdToken();
-      AsyncStorage.setItem("userToken", userToken);
+      AsyncStorage.setItem("userToken", JSON.stringify(userToken));
 
       if (data.name) {
         await createProfile(userCredential, data.name)

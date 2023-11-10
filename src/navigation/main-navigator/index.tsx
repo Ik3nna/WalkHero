@@ -3,13 +3,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LOADING, LOGIN, HOME, FEED, LEADERBOARD, SIGNUP } from '../../constants/routeName';
 import Loading from '../../screens/loading';
 import Login from '../../screens/login';
-import Feed from '../../screens/feed';
 import LeaderBoard from '../../screens/leaderboard';
 import colors from '../../assets/themes/colors';
 import Signup from '../../screens/signup';
 import { getFontSize } from '../../utils/getFontSize';
 import { StyleSheet, View } from 'react-native';
 import Icon from '../../components/icons';
+import { FeedNavigator } from '../feed-navigator';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,7 +44,7 @@ function BottomTabs () {
                 })
             }
         >
-            <Tab.Screen name={FEED} component={Feed} options={{ headerShown: false }} />
+            <Tab.Screen name={FEED} component={FeedNavigator} options={{ headerShown: false }} />
             <Tab.Screen name={LEADERBOARD} component={LeaderBoard} />
         </Tab.Navigator>
     )
@@ -63,7 +63,8 @@ export const MainNavigator = ()=> {
                     headerStyle: style.headerStyle,
                     headerBackVisible: false,
                     headerTitle: "Feed",
-                    headerTitleStyle: style.headerTitleStyle
+                    headerTitleStyle: style.headerTitleStyle,
+                    headerTitleAlign: "center"
                 }} 
             />
         </Stack.Navigator>
@@ -76,11 +77,11 @@ const style = StyleSheet.create({
         fontFamily: "normal" 
     },
     headerStyle: {
-        backgroundColor: colors.purple
+        backgroundColor: colors.purple,
     },
     headerTitleStyle: {
         color: colors.white, 
         fontFamily: "normal", 
-        fontSize: getFontSize(0.025)
+        fontSize: getFontSize(0.028),
     }
 })

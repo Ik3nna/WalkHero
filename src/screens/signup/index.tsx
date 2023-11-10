@@ -10,8 +10,9 @@ import { FormDataProps, NavigationProps } from '../../types'
 import Button from '../../components/button'
 import { HOME, LOGIN } from '../../constants/routeName'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../config/firebaseConfig'
+import { auth, db } from '../../config/firebaseConfig'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ref, set } from 'firebase/database'
 
 const { width, height } = Dimensions.get("window");
 
@@ -30,12 +31,26 @@ const Login = ({ navigation }: NavigationProps) => {
   })
   const [isLoading, setIsLoading] = useState(false);
 
+  const createProfile = async (response: any, username: string) => {
+    set(ref(db, `users/${response.user.uid}`), {
+      username: username
+    });
+    set(ref(db, `users/${response.user.uid}/leaderboard`), {
+      totalSteps: 0
+    });
+  }
+
   const onSubmit = async (data: FormDataProps)=> {
     setIsLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const userToken = await userCredential.user.getIdToken();
       AsyncStorage.setItem("userToken", userToken);
+
+      if (data.name) {
+        await createProfile(userCredential, data.name)
+      }
+
       navigation.navigate(HOME);
     } catch (error: any) {
       Alert.alert("Error", "Please try again")

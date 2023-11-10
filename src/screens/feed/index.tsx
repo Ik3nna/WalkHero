@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Feed = () => {
+  AsyncStorage.clear();
   return (
     <View>
-      <StatusBar style="light" />
+      <StatusBar style='light' />
       
     </View>
   )

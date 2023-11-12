@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
+import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Button from '../../components/button';
@@ -7,12 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ACTIVITY } from '../../constants/routeName';
 import { FeedProps } from '../../types';
-import { onValue, ref, set } from 'firebase/database';
+import { onValue, ref, set, update } from 'firebase/database';
 import { auth, db } from '../../config/firebaseConfig';
 import Icon from '../../components/icons';
 import { getFontSize } from '../../utils/getFontSize';
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const Feed = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -25,12 +25,25 @@ const Feed = () => {
       const data = snapshot.val();
       const dataArray:FeedProps[] = data ? Object.values(data) : [];
       
-      setFeed(dataArray.sort((a, b)=>b.date - a.date).slice(0, 5));
+      setFeed(dataArray);
     }) 
   }
 
+  const updateLeaderboard = ()=> {
+    if (feed) {
+      if (feed.length > 0) {
+        const steps = feed?.reduce((prev, current)=> (prev.steps > current.steps ? prev : current), {} as { steps: number})
+        console.log(steps);
+    
+        update(ref(db, `users/${currentUser?.uid}/leaderboard`), {
+          totalSteps: steps?.steps
+        });
+      }
+    }
+  }
+
   const deleteData = (date: number)=> {
-    set(ref(db, `users/${currentUser?.uid}/sessions/${date}`), null)
+    set(ref(db, `users/${currentUser?.uid}/sessions/${date}`), null);
   }
 
   const formatTime = (time: number) => {
@@ -49,8 +62,12 @@ const Feed = () => {
   }
 
   useEffect(()=>{
-    fetchData()
+    fetchData();
   }, [])
+
+  useEffect(()=>{
+    updateLeaderboard()
+  }, [feed])
 
   return (
     <View style={styles.container}>
@@ -58,7 +75,7 @@ const Feed = () => {
       
       <View style={styles.list}>
         <FlatList 
-          data={feed}
+          data={feed?.sort((a, b)=>b.date - a.date).slice(0, 5)}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.date.toString()}
           renderItem={({ item })=> 

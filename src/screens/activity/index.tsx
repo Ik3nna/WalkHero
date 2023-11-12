@@ -6,7 +6,7 @@ import colors from '../../assets/themes/colors';
 import Button from '../../components/button';
 import { NavigationProps } from '../../types';
 import { db, auth } from '../../config/firebaseConfig';
-import { ref, update, set } from 'firebase/database';
+import { ref, set } from 'firebase/database';
 import { useGlobalContext } from '../../context';
 
 const Activity = ({ navigation }: NavigationProps) => {
@@ -14,6 +14,7 @@ const Activity = ({ navigation }: NavigationProps) => {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
   const [currentStepCount, setCurrentStepCount] = useState(0);
   const { prevStepCount, setPrevStepCount } = useGlobalContext();
+  const currentUser = auth.currentUser;
 
   const subscribe = async () => {
     const isAvailable = await Pedometer.isAvailableAsync();
@@ -42,12 +43,8 @@ const Activity = ({ navigation }: NavigationProps) => {
 
   const handleDone = async ()=> {
     setPrevStepCount((prev: number)=> prev + currentStepCount);
-    const currentUser = auth.currentUser;
     const sessionId = Date.now();
     
-    // update(ref(db, `users/${currentUser?.uid}/leaderboard`), {
-    //     totalSteps: currentStepCount
-    // });
     set(ref(db, `users/${currentUser?.uid}/sessions/${sessionId}`), {
       date: sessionId,
       time: formattedTime(time),

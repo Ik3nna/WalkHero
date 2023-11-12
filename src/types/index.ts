@@ -47,3 +47,9 @@ export type FeedProps = {
     steps: number,
     timeTaken: string
 }
+
+// Leaderboard type
+export type LeaderboardProps = {
+    totalSteps: number;
+    username: string
+}

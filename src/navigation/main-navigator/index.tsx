@@ -40,12 +40,20 @@ function BottomTabs () {
                 tabBarLabelStyle: style.tabBarLabelStyle,
                 tabBarActiveTintColor: colors.purple,
                 tabBarInactiveTintColor: colors.grey,
-                headerShown: false
                 })
             }
         >
             <Tab.Screen name={FEED} component={FeedNavigator} options={{ headerShown: false }} />
-            <Tab.Screen name={LEADERBOARD} component={LeaderBoard} />
+            <Tab.Screen 
+                name={LEADERBOARD} 
+                component={LeaderBoard} 
+                options={{  
+                    headerStyle: style.headerStyle,
+                    headerTitle: "Leaderboard",
+                    headerTitleStyle: style.headerTitleStyle,
+                    headerTitleAlign: "center"
+                }} 
+            />
         </Tab.Navigator>
     )
 }
@@ -56,20 +64,11 @@ export const MainNavigator = ()=> {
             <Stack.Screen name={LOADING} component={Loading} options={{ headerShown: false}} />
             <Stack.Screen name={LOGIN} component={Login} options={{ headerShown: false}} />
             <Stack.Screen name={SIGNUP} component={Signup} options={{ headerShown: false}} />
-            <Stack.Screen 
-                name={HOME} 
-                component={BottomTabs} 
-                options={{ 
-                    headerStyle: style.headerStyle,
-                    headerBackVisible: false,
-                    headerTitle: "Feed",
-                    headerTitleStyle: style.headerTitleStyle,
-                    headerTitleAlign: "center"
-                }} 
-            />
+            <Stack.Screen name={HOME} component={BottomTabs} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }
+
 
 const style = StyleSheet.create({
     tabBarLabelStyle: {

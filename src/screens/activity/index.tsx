@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Pedometer } from 'expo-sensors';
 import { getFontSize } from '../../utils/getFontSize'
 import colors from '../../assets/themes/colors';
@@ -7,26 +7,27 @@ import Button from '../../components/button';
 import { NavigationProps } from '../../types';
 import { db, auth } from '../../config/firebaseConfig';
 import { ref, update, set } from 'firebase/database';
-import { useFocusEffect } from '@react-navigation/native';
+import { useGlobalContext } from '../../context';
 
 const Activity = ({ navigation }: NavigationProps) => {
   const [time, setTime] = useState(0);
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
   const [currentStepCount, setCurrentStepCount] = useState(0);
+  const { prevStepCount, setPrevStepCount } = useGlobalContext();
 
   const subscribe = async () => {
     const isAvailable = await Pedometer.isAvailableAsync();
     setIsPedometerAvailable(String(isAvailable));
-
-    if (isAvailable) {
-        const subscription = Pedometer.watchStepCount(result => {
-          setCurrentStepCount(result.steps);
-        });
   
-        return subscription;
+    if (isAvailable) {
+      const subscription = Pedometer.watchStepCount(result => {
+        setCurrentStepCount(result.steps - prevStepCount);
+      });
+  
+      return subscription;
     }
-  };
-
+  }; 
+  
   const formattedTime = (time: number) => {
     const seconds = time % 60;
     const minutes = Math.floor((time / 60) % 60);
@@ -40,9 +41,9 @@ const Activity = ({ navigation }: NavigationProps) => {
   }
 
   const handleDone = async ()=> {
+    setPrevStepCount((prev: number)=> prev + currentStepCount);
     const currentUser = auth.currentUser;
     const sessionId = Date.now();
-    console.log(currentUser?.uid);
     
     // update(ref(db, `users/${currentUser?.uid}/leaderboard`), {
     //     totalSteps: currentStepCount
@@ -51,7 +52,8 @@ const Activity = ({ navigation }: NavigationProps) => {
       date: sessionId,
       time: formattedTime(time),
       steps: currentStepCount
-    })
+    });
+
     navigation.goBack();
   }
 
@@ -59,7 +61,7 @@ const Activity = ({ navigation }: NavigationProps) => {
     let subscription: any;
 
     const setUpSubscription = async ()=> {
-        await subscribe();
+      await subscribe();
     }
 
     setUpSubscription();
@@ -69,23 +71,14 @@ const Activity = ({ navigation }: NavigationProps) => {
 
   useEffect(()=>{
     const Interval = setInterval(()=>{
-        setTime(time + 1);
+      setTime(time + 1);
     }, 1000)
 
     return ()=> {
-        clearInterval(Interval);
+      clearInterval(Interval);
     }
-  })
+  }, [time]);
 
-  useFocusEffect(
-    useCallback(()=>{
-        return ()=> {
-            setCurrentStepCount(0);
-            setTime(0);
-        }
-    },[navigation])
-  )
-  
   return (
     <View style={styles.container}>
       <Text style={styles.time_text}>Time</Text>

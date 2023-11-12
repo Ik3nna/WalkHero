@@ -1,4 +1,4 @@
-import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, FlatList, Platform, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Button from '../../components/button';
@@ -17,7 +17,6 @@ const { width, height } = Dimensions.get("window");
 const Feed = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const [feed, setFeed] = useState<FeedProps[]>();
-  const [limit, setLimit] = useState(5);
   const currentUser = auth.currentUser;
   
   const fetchData = ()=> {
@@ -26,7 +25,7 @@ const Feed = () => {
       const data = snapshot.val();
       const dataArray:FeedProps[] = data ? Object.values(data) : [];
       
-      setFeed(dataArray.sort((a, b)=>b.date - a.date));
+      setFeed(dataArray.sort((a, b)=>b.date - a.date).slice(0, 5));
     }) 
   }
 
@@ -51,15 +50,16 @@ const Feed = () => {
 
   useEffect(()=>{
     fetchData()
-  }, [limit])
+  }, [])
 
   return (
     <View style={styles.container}>
       <StatusBar style='light' />
-
+      
       <View style={styles.list}>
         <FlatList 
           data={feed}
+          showsVerticalScrollIndicator={false}
           keyExtractor={item => item.date.toString()}
           renderItem={({ item })=> 
             <View style={styles.list_container}>
@@ -73,6 +73,8 @@ const Feed = () => {
               </TouchableOpacity>
             </View>
           }
+          ListFooterComponent={<View />}
+          ListFooterComponentStyle={{ height: 20 }}
         />
       </View>
       
@@ -92,15 +94,15 @@ export default Feed
 
 const styles = StyleSheet.create({
   container: {
-    height: height,
-    marginHorizontal: "4%"
+    marginHorizontal: "4%",
+    flex: 1
   },
   list: {
-    marginTop: 10
+    marginTop: 10,
+    flex: 1
   },
   btn: {
-    position: "absolute",
-    bottom: Platform.OS === "ios" ? height - (0.77 * height) : height - (0.8 * height),
+    marginBottom: "3%"
   },
   list_container: {
     marginVertical: "2%",

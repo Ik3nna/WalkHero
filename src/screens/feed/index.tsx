@@ -62,7 +62,7 @@ const Feed = () => {
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.date.toString()}
           renderItem={({ item })=> 
-            <View style={styles.list_container}>
+            <TouchableOpacity style={styles.list_container}>
               <View style={styles.text_container}>
                 <Text style={styles.text}>{formatTime(item.date)}</Text>
                 <Text style={styles.text}>Number of steps: {item.steps}</Text>
@@ -71,7 +71,7 @@ const Feed = () => {
               <TouchableOpacity onPress={()=>deleteData(item.date)}>
                 <Icon type="mi" name="delete" size={40} color={colors.danger} />
               </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
           }
           ListFooterComponent={<View />}
           ListFooterComponentStyle={{ height: 20 }}
@@ -99,7 +99,11 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 10,
-    flex: 1
+    flex: 1,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3
   },
   btn: {
     marginBottom: "3%"

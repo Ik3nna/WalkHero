@@ -4,4 +4,5 @@ export default {
     black: "#000",
     grey: "#808080",
     danger: "#8b0000",
+    shadow: '#171717',
 }

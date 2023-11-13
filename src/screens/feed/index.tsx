@@ -33,7 +33,6 @@ const Feed = () => {
     if (feed) {
       if (feed.length > 0) {
         const steps = feed?.reduce((prev, current)=> (prev.steps > current.steps ? prev : current), {} as { steps: number})
-        console.log(steps);
     
         update(ref(db, `users/${currentUser?.uid}/leaderboard`), {
           totalSteps: steps?.steps

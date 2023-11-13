@@ -40,7 +40,7 @@ const Leaderboard = () => {
         <FlatList 
           data={leaderboard}
           showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.totalSteps.toString()}
+          keyExtractor={item => item.username}
           renderItem={({ item, index })=> 
             <View style={[styles.text_container, styles.list_container]}>
               <Text style={styles.text}>{index + 1}</Text>
